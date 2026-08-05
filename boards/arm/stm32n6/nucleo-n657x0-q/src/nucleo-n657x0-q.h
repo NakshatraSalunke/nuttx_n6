@@ -56,6 +56,17 @@
 #define GPIO_LD7       (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_2MHZ | \
                         GPIO_OUTPUT_SET | GPIO_PORTG | GPIO_PIN8)
 
+/* GPIO pins used by the GPIO Subsystem */
+
+#define BOARD_NGPIOIN     0 /* Amount of GPIO Input pins */
+#define BOARD_NGPIOOUT    2 /* Amount of GPIO Output pins */
+#define BOARD_NGPIOINT    0 /* Amount of GPIO Input w/ Interruption pins */
+
+#define GPIO_OUT1         (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHZ | \
+                           GPIO_OUTPUT_CLEAR | GPIO_PORTE | GPIO_PIN11)
+#define GPIO_OUT2         (GPIO_OUTPUT | GPIO_PUSHPULL | GPIO_SPEED_50MHZ | \
+                           GPIO_OUTPUT_CLEAR | GPIO_PORTE | GPIO_PIN12)
+
 /****************************************************************************
  * Public Types
  ****************************************************************************/
@@ -82,9 +93,27 @@
  *   CONFIG_BOARD_LATE_INITIALIZE=n && CONFIG_BOARDCTL=y :
  *     Called from the NSH library
  *
- ****************************************************************************/
+ *   Input Parameters:
+ *     None
+ *
+ *   Returned Value:
+ *     Zero (OK) on success; a negated errno value on failure.
+ *
+ * ****************************************************************************/
 
 int stm32_bringup(void);
+
+/****************************************************************************
+ * Name: stm32_gpio_initialize
+ *
+ * Description:
+ *   Initialize GPIO-Driver.
+ *
+ * ****************************************************************************/
+
+#if defined(CONFIG_DEV_GPIO) && !defined(CONFIG_GPIO_LOWER_HALF)
+int stm32_gpio_initialize(void);
+#endif
 
 #endif /* __ASSEMBLY__ */
 #endif /* __BOARDS_ARM_STM32N6_NUCLEO_N657X0_Q_SRC_NUCLEO_N657X0_Q_H */

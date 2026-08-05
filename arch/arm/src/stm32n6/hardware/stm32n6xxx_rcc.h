@@ -57,12 +57,14 @@
  */
 
 #define STM32_RCC_MEMENR_OFFSET       0x024c  /* AXI/AHB SRAM clock enable register */
+#define STM32_RCC_AHB1ENR_OFFSET      0x0250  /* AHB1 peripheral clock enable register */
 #define STM32_RCC_AHB4ENR_OFFSET      0x025c  /* AHB4 peripheral clock enable register */
 #define STM32_RCC_APB1LENR_OFFSET     0x0264  /* APB1 peripheral clock enable register 1 */
 #define STM32_RCC_APB2ENR_OFFSET      0x026c  /* APB2 peripheral clock enable register */
 #define STM32_RCC_APB4HENR_OFFSET     0x0278  /* APB4 peripheral clock enable register 2 */
 #define STM32_RCC_BUSLPENR_OFFSET     0x0284  /* Bus clocks enable in Sleep mode */
 #define STM32_RCC_MEMLPENR_OFFSET     0x028c  /* SRAM clocks enable in Sleep mode */
+#define STM32_RCC_AHB1LPENR_OFFSET    0x0290  /* AHB1 LP clock enable register */
 #define STM32_RCC_APB1LLPENR_OFFSET   0x02a4  /* APB1 LP clock enable register 1 */
 #define STM32_RCC_APB2LPENR_OFFSET    0x02ac  /* APB2 LP clock enable register */
 
@@ -76,10 +78,14 @@
 #define STM32_RCC_APB4HENSR_OFFSET    0x0a78  /* APB4 clock enable set register 2 */
 #define STM32_RCC_BUSLPENSR_OFFSET    0x0a84  /* Bus LP clock enable set register */
 #define STM32_RCC_MEMLPENSR_OFFSET    0x0a8c  /* SRAM LP clock enable set register */
+#define STM32_RCC_AHB1LPENSR_OFFSET   0x0a90  /* AHB1 LP clock enable set register */
 #define STM32_RCC_APB1LLPENSR_OFFSET  0x0aa4  /* APB1 LP clock enable set register 1 */
 #define STM32_RCC_APB2LPENSR_OFFSET   0x0aac  /* APB2 LP clock enable set register */
 
 #define STM32_RCC_CCR_OFFSET          0x1000  /* Clock control clear register */
+#define STM32_RCC_AHB4ENCR_OFFSET     0x125c  /* AHB4 clock enable clear register */
+#define STM32_RCC_APB1LENCR_OFFSET    0x1264  /* APB1 clock enable clear register 1 */
+#define STM32_RCC_APB1LLPENCR_OFFSET  0x12a4  /* APB1 LP clock enable clear register 1 */
 #define STM32_RCC_APB2ENCR_OFFSET     0x126c  /* APB2 clock enable clear register */
 
 #define STM32_RCC_CSR_OFFSET          0x0800  /* Clock status (set) register */
@@ -103,12 +109,14 @@
 #define STM32_RCC_DIVENSR             (STM32_RCC_BASE + STM32_RCC_DIVENSR_OFFSET)
 
 #define STM32_RCC_MEMENR              (STM32_RCC_BASE + STM32_RCC_MEMENR_OFFSET)
+#define STM32_RCC_AHB1ENR             (STM32_RCC_BASE + STM32_RCC_AHB1ENR_OFFSET)
 #define STM32_RCC_AHB4ENR             (STM32_RCC_BASE + STM32_RCC_AHB4ENR_OFFSET)
 #define STM32_RCC_APB1LENR            (STM32_RCC_BASE + STM32_RCC_APB1LENR_OFFSET)
 #define STM32_RCC_APB2ENR             (STM32_RCC_BASE + STM32_RCC_APB2ENR_OFFSET)
 #define STM32_RCC_APB4HENR            (STM32_RCC_BASE + STM32_RCC_APB4HENR_OFFSET)
 #define STM32_RCC_BUSLPENR            (STM32_RCC_BASE + STM32_RCC_BUSLPENR_OFFSET)
 #define STM32_RCC_MEMLPENR            (STM32_RCC_BASE + STM32_RCC_MEMLPENR_OFFSET)
+#define STM32_RCC_AHB1LPENR           (STM32_RCC_BASE + STM32_RCC_AHB1LPENR_OFFSET)
 #define STM32_RCC_APB1LLPENR          (STM32_RCC_BASE + STM32_RCC_APB1LLPENR_OFFSET)
 #define STM32_RCC_APB2LPENR           (STM32_RCC_BASE + STM32_RCC_APB2LPENR_OFFSET)
 
@@ -119,10 +127,14 @@
 #define STM32_RCC_APB4HENSR           (STM32_RCC_BASE + STM32_RCC_APB4HENSR_OFFSET)
 #define STM32_RCC_BUSLPENSR           (STM32_RCC_BASE + STM32_RCC_BUSLPENSR_OFFSET)
 #define STM32_RCC_MEMLPENSR           (STM32_RCC_BASE + STM32_RCC_MEMLPENSR_OFFSET)
+#define STM32_RCC_AHB1LPENSR          (STM32_RCC_BASE + STM32_RCC_AHB1LPENSR_OFFSET)
 #define STM32_RCC_APB1LLPENSR         (STM32_RCC_BASE + STM32_RCC_APB1LLPENSR_OFFSET)
 #define STM32_RCC_APB2LPENSR          (STM32_RCC_BASE + STM32_RCC_APB2LPENSR_OFFSET)
 
 #define STM32_RCC_CCR                 (STM32_RCC_BASE + STM32_RCC_CCR_OFFSET)
+#define STM32_RCC_AHB4ENCR            (STM32_RCC_BASE + STM32_RCC_AHB4ENCR_OFFSET)
+#define STM32_RCC_APB1LENCR           (STM32_RCC_BASE + STM32_RCC_APB1LENCR_OFFSET)
+#define STM32_RCC_APB1LLPENCR         (STM32_RCC_BASE + STM32_RCC_APB1LLPENCR_OFFSET)
 #define STM32_RCC_APB2ENCR            (STM32_RCC_BASE + STM32_RCC_APB2ENCR_OFFSET)
 
 #define STM32_RCC_CSR                 (STM32_RCC_BASE + STM32_RCC_CSR_OFFSET)
@@ -223,6 +235,10 @@
                                        RCC_MEMENR_AXISRAM3EN | RCC_MEMENR_AXISRAM4EN | \
                                        RCC_MEMENR_AXISRAM5EN | RCC_MEMENR_AXISRAM6EN)
 
+/* AHB1 peripheral clock enable register */
+
+#define RCC_AHB1ENR_GPDMA1EN          (1 << 4)   /* Bit 4: GPDMA1 clock enable */
+
 /* AHB4 peripheral clock enable register */
 
 #define RCC_AHB4ENR_PWREN             (1 << 18)  /* Bit 18: PWR enable */
@@ -243,9 +259,14 @@
 
 #define RCC_APB1LENR_TIM2EN           (1 << 0)   /* Bit 0:  TIM2 enable */
 
+#define RCC_APB1LENR_USART3EN         (1 << 18)   /* Bit 18: USART3 enable */
+#define RCC_APB1LENR_I2C1EN           (1 << 21)   /* Bit 21: I2C1 enable */
+
 /* APB2 peripheral clock enable register */
 
 #define RCC_APB2ENR_USART1EN          (1 << 4)   /* Bit 4:  USART1 enable */
+#define RCC_APB2ENR_SPI1EN            (1 << 12)  /* Bit 12: SPI1 enable */
+#define RCC_APB2ENR_SPI5EN            (1 << 20)  /* Bit 20: SPI5 enable */
 
 /* APB4 peripheral clock enable register 2 */
 
@@ -274,15 +295,25 @@
 /* APB1 peripheral clock enable in Sleep mode (register 1) */
 
 #define RCC_APB1LLPENR_TIM2LPEN       (1 << 0)   /* Bit 0:  TIM2 enable in CSLEEP */
-
+#define RCC_APB1LLPENR_USART3LPEN     (1 << 18)   /* Bit 18: USART3 enable in CSLEEP */
+#define RCC_APB1LLPENR_I2C1LPEN       (1 << 21)   /* Bit 21: I2C1 enable in CSLEEP */
 /* APB2 peripheral clock enable in Sleep mode */
 
 #define RCC_APB2LPENR_USART1LPEN      (1 << 4)   /* Bit 4:  USART1 enable in CSLEEP */
+#define RCC_APB2LPENR_SPI1LPEN        (1 << 12)  /* Bit 12: SPI1 enable in CSLEEP */
+#define RCC_APB2LPENR_SPI5LPEN        (1 << 20)  /* Bit 20: SPI5 enable in CSLEEP */
+
+/* AHB1 peripheral clock enable in Sleep mode */
+
+#define RCC_AHB1LPENR_GPDMA1LPEN      (1 << 4)   /* Bit 4: GPDMA1 clock enable in CSLEEP */
 
 /* Peripheral kernel clock select register 13 */
 
 #define RCC_CCIPR13_USART1SEL_SHIFT   (0)
 #define RCC_CCIPR13_USART1SEL_MASK    (0x7 << RCC_CCIPR13_USART1SEL_SHIFT)
 #define RCC_CCIPR13_USART1SEL_HSI     (6 << RCC_CCIPR13_USART1SEL_SHIFT)
+#define RCC_CCIPR13_USART3SEL_SHIFT   (8)
+#define RCC_CCIPR13_USART3SEL_MASK    (0x7 << RCC_CCIPR13_USART3SEL_SHIFT)
+#define RCC_CCIPR13_USART3SEL_HSI     (6 << RCC_CCIPR13_USART3SEL_SHIFT)
 
 #endif /* __ARCH_ARM_SRC_STM32N6_HARDWARE_STM32N6XXX_RCC_H */

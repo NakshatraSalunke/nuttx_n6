@@ -11,10 +11,119 @@ config STM32_N6_PERIPHERALS
 	bool
 	default y
 	select STM32_HAVE_USART1
+	select STM32_HAVE_USART3
+
+
+config STM32N6_USART3
+	bool "USART3 support"
+	default n
+
+if STM32N6_USART3
+
+config USART3_SERIALDRIVER
+	bool
+	default y
+
+config USART3_SERIAL_CONSOLE
+	bool
+
+config USART3_RXBUFSIZE
+	int "USART3 Rx buffer size"
+	default 256
+
+config USART3_TXBUFSIZE
+	int "USART3 Tx buffer size"
+	default 256
+
+config USART3_BAUD
+	int "USART3 BAUD rate"
+	default 115200
+
+config USART3_BITS
+	int "USART3 number of bits"
+	default 8
+
+config USART3_PARITY
+	int "USART3 parity (0=none, 1=odd, 2=even)"
+	default 0
+
+config USART3_2STOP
+	int "USART3 two stop bits"
+	default 0
+
+endif # STM32N6_USART3
 
 config STM32_STM32N6XXXX
 	bool
 	default y
+
+config STM32N6_GPDMA1
+	bool "GPDMA1 support"
+	default n
+	select ARCH_DMA
+
+config STM32N6_GPDMA2
+	bool "GPDMA2 support"
+	default n
+
+config STM32N6_PWM
+	bool "PWM support"
+	default n
+	select PWM
+
+config STM32N6_I2C
+	bool
+	default n
+
+config STM32N6_I2C1
+	bool "I2C1 support"
+	default n
+	select STM32N6_I2C
+	select I2C
+
+config STM32N6_I2C2
+	bool "I2C2 support"
+	default n
+	select STM32N6_I2C
+	select I2C
+
+config STM32N6_I2C3
+	bool "I2C3 support"
+	default n
+	select STM32N6_I2C
+	select I2C
+
+config STM32N6_I2C4
+	bool "I2C4 support"
+	default n
+	select STM32N6_I2C
+	select I2C
+
+config STM32N6_I2C_DMA
+	bool "I2C DMA support"
+	default n
+	depends on STM32N6_I2C && (STM32N6_GPDMA1 || STM32N6_GPDMA2)
+
+config STM32N6_SPI
+	bool
+	default n
+
+config STM32N6_SPI1
+	bool "SPI1 support"
+	default n
+	select STM32N6_SPI
+	select SPI
+
+config STM32N6_SPI5
+	bool "SPI5 support"
+	default n
+	select STM32N6_SPI
+	select SPI
+
+config STM32N6_SPI_DMA
+	bool "SPI DMA support"
+	default n
+	depends on STM32N6_SPI && (STM32N6_GPDMA1 || STM32N6_GPDMA2)
 
 choice
 	prompt "STM32 N6 Chip Selection"

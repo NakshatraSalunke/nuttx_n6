@@ -209,12 +209,34 @@ void __start_c(void)
   putreg32(RCC_APB2LPENR_USART1LPEN, STM32_RCC_APB2LPENSR);
 #endif
 
+#ifdef CONFIG_STM32_USART3
+  putreg32(RCC_APB1LLPENR_USART3LPEN, STM32_RCC_APB1LLPENSR);
+#endif
+
+#ifdef CONFIG_STM32N6_I2C1
+  putreg32(RCC_APB1LLPENR_I2C1LPEN, STM32_RCC_APB1LLPENSR);
+#endif
+
+#ifdef CONFIG_STM32N6_SPI5
+  putreg32(RCC_APB2LPENR_SPI5LPEN, STM32_RCC_APB2LPENSR);
+#endif
+
+#ifdef CONFIG_STM32N6_GPDMA1
+  putreg32(RCC_AHB1LPENR_GPDMA1LPEN, STM32_RCC_AHB1LPENSR);
+#endif
+
+
   /* Mark the board's I/O voltage domains as supply-valid before any GPIO
    * pad is driven.  The mask of PWR_SVMCR3_* bits is board-specific and
    * provided by board.h via BOARD_PWR_VDDIO.
    */
 
   stm32_pwr_enablevddio(BOARD_PWR_VDDIO);
+
+  /* Enable VDDIO4 for Port C and Port H (I2C1 pins) */
+
+  putreg32(PWR_SVMCR1_VDDIO4SV, STM32_PWR_SVMCR1);
+
 
   /* Apply the ES0620 I/O-compensation mitigation (write 0x287) to the
    * domains we use.  Only VDDIO2 and VDDIO3 are touched: the other
@@ -233,12 +255,23 @@ void __start_c(void)
 
   (void)getreg32(STM32_SYSCFG_VDDCCCR);
 
-#ifdef CONFIG_STM32_USART1
-  /* Route USART1's kernel clock to HSI so the BRR computation is
+#if defined(CONFIG_STM32_USART1) || defined(CONFIG_STM32_USART3)
+  /* Route USART kernel clocks to HSI so the BRR computation is
    * independent of any later SYSCLK changes.
    */
 
-  putreg32(RCC_CCIPR13_USART1SEL_HSI, STM32_RCC_CCIPR13);
+  {
+    uint32_t ccipr13 = getreg32(STM32_RCC_CCIPR13);
+#ifdef CONFIG_STM32_USART1
+    ccipr13 &= ~RCC_CCIPR13_USART1SEL_MASK;
+    ccipr13 |= RCC_CCIPR13_USART1SEL_HSI;
+#endif
+#ifdef CONFIG_STM32_USART3
+    ccipr13 &= ~RCC_CCIPR13_USART3SEL_MASK;
+    ccipr13 |= RCC_CCIPR13_USART3SEL_HSI;
+#endif
+    putreg32(ccipr13, STM32_RCC_CCIPR13);
+  }
 #endif
 
   stm32_lowsetup();
