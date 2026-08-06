@@ -41,6 +41,9 @@ endif
 ifeq ($(CONFIG_STM32_USART),y)
 CHIP_CSRCS += stm32_serial.c
 endif
+ifeq ($(CONFIG_STM32N6_I2C),y)
+CHIP_CSRCS += stm32_i2c.c
+endif
 
 # Chip-specific RCC
 

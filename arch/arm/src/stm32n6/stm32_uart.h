@@ -40,14 +40,31 @@
 
 /* Sanity checks */
 
+/* Map STM32N6-specific Kconfig symbols to the generic STM32 serial driver symbols */
+
+#if defined(CONFIG_STM32N6_USART3)
+#  define CONFIG_STM32_USART3            1
+#  define CONFIG_STM32_USART3_SERIALDRIVER 1
+#endif
+
+/* Sanity checks */
+
 #if !defined(CONFIG_STM32_USART1)
 #  undef CONFIG_STM32_USART1_SERIALDRIVER
 #  undef CONFIG_STM32_USART1_1WIREDRIVER
 #endif
 
+#if !defined(CONFIG_STM32_USART3)
+#  undef CONFIG_STM32_USART3_SERIALDRIVER
+#endif
+
 /* Is there a USART enabled? */
 
 #if defined(CONFIG_STM32_USART1)
+#  define HAVE_UART 1
+#endif
+
+#if defined(CONFIG_STM32_USART3)
 #  define HAVE_UART 1
 #endif
 

@@ -31,6 +31,7 @@
 #include <assert.h>
 
 #include "stm32_rcc.h"
+
 #include "stm32_pwr.h"
 
 /****************************************************************************
@@ -81,6 +82,22 @@ static inline void rcc_enableahb4(void)
            STM32_RCC_AHB4ENSR);
 }
 
+
+/****************************************************************************
+ * Name: rcc_enableapb1
+ *
+ * Description:
+ * Enable selected APB1 peripherals.
+ *
+ ****************************************************************************/
+
+static inline void rcc_enableapb1(void)
+{
+  /* Enable TIM2 clock using the set-register alias */
+
+  putreg32(RCC_APB1LENR_TIM2EN, STM32_RCC_APB1LENSR);
+}
+
 /****************************************************************************
  * Name: rcc_enableapb2
  *
@@ -124,6 +141,7 @@ void stm32_rcc_enableperipherals(void)
            STM32_RCC_MEMENSR);
 
   rcc_enableahb4();
+  rcc_enableapb1();
   rcc_enableapb2();
 }
 

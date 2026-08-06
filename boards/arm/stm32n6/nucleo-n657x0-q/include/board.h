@@ -143,6 +143,22 @@
 #define GPIO_USART1_TX   GPIO_USART1_TX_1
 #define GPIO_USART1_RX   GPIO_USART1_RX_1
 
+/* USART3 GPIOs----------------------------- */
+/*General purpose usart for communication*/
+/* PD8=TX , PD9=RX. 
+ */
+
+#define GPIO_USART3_TX GPIO_USART3_TX_1
+#define GPIO_USART3_RX GPIO_USART3_RX_1
+
+/* I2C1 GPIOs------------------------------- */
+#define GPIO_I2C1_SDA GPIO_I2C1_SDA_1
+#define GPIO_I2C1_SCL GPIO_I2C1_SCL_1
+
+
+
+
+
 /****************************************************************************
  * Public Data
  ****************************************************************************/

@@ -1,5 +1,5 @@
 /****************************************************************************
- * boards/arm/stm32n6/nucleo-n657x0-q/src/stm32_boot.c
+ * arch/arm/src/stm32n6/stm32_i2c.h
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -20,62 +20,57 @@
  *
  ****************************************************************************/
 
+#ifndef __ARCH_ARM_SRC_STM32N6_STM32_I2C_H
+#define __ARCH_ARM_SRC_STM32N6_STM32_I2C_H
+
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
 #include <nuttx/config.h>
+#include <nuttx/i2c/i2c_master.h>
 
-#include <debug.h>
-
-#include <nuttx/board.h>
-
-#include "arm_internal.h"
-#include "nucleo-n657x0-q.h"
-
-#include <arch/board/board.h>
+#include "chip.h"
+#include "hardware/stm32n6xxx_i2c.h"
 
 /****************************************************************************
- * Name: stm32_board_initialize
+ * Public Function Prototypes
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: stm32_i2cbus_initialize
  *
  * Description:
- *   All STM32 architectures must provide the following entry point.  This
- *   entry point is called early in the initialization -- after all memory
- *   has been configured and mapped but before any devices have been
- *   initialized.
+ *   Initialize the selected I2C port. And return a unique instance of struct
+ *   i2c_master_s.  This function may be called to obtain multiple
+ *   instances of the interface, each of which may be set up with a
+ *   different frequency and slave address.
+ *
+ * Input Parameters:
+ *   Port number (for hardware that has multiple I2C interfaces)
+ *
+ * Returned Value:
+ *   Valid I2C device structure reference on success; a NULL on failure
  *
  ****************************************************************************/
 
-void stm32_board_initialize(void)
-{
-
-#ifdef CONFIG_ARCH_LEDS
-  /* Configure on-board LEDs if LED support has been selected. */
-
-  board_autoled_initialize();
-#endif
-
-}
+struct i2c_master_s *stm32_i2cbus_initialize(int port);
 
 /****************************************************************************
- * Name: board_late_initialize
+ * Name: stm32_i2cbus_uninitialize
  *
  * Description:
- *   If CONFIG_BOARD_LATE_INITIALIZE is selected, then an additional
- *   initialization call will be performed in the boot-up sequence to a
- *   function called board_late_initialize().  board_late_initialize() will
- *   be called immediately after up_initialize() is called and just before
- *   the initial application is started.  This additional initialization
- *   phase may be used, for example, to initialize board-specific device
- *   drivers.
+ *   De-initialize the selected I2C port, and power down the device.
+ *
+ * Input Parameters:
+ *   Device structure as returned by the stm32_i2cbus_initialize()
+ *
+ * Returned Value:
+ *   OK on success, ERROR when internal reference count mismatch or dev
+ *   points to invalid hardware device.
  *
  ****************************************************************************/
 
-#ifdef CONFIG_BOARD_LATE_INITIALIZE
-void board_late_initialize(void)
-{
-  /* Perform board-specific initialization here if so configured */
+int stm32_i2cbus_uninitialize(struct i2c_master_s *dev);
 
-  stm32_bringup();
-}
-#endif
+#endif /* __ARCH_ARM_SRC_STM32N6_STM32_I2C_H */

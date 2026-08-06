@@ -175,6 +175,7 @@ static bool stm32serial_rxflowcontrol(struct uart_dev_s *dev,
 static void stm32serial_send(struct uart_dev_s *dev, int ch);
 static void stm32serial_txint(struct uart_dev_s *dev, bool enable);
 static bool stm32serial_txready(struct uart_dev_s *dev);
+static bool stm32serial_txempty(struct uart_dev_s *dev);
 
 #ifdef CONFIG_PM
 static void stm32serial_setsuspend(struct uart_dev_s *dev, bool suspend);
@@ -205,7 +206,7 @@ static const struct uart_ops_s g_uart_ops =
   .send           = stm32serial_send,
   .txint          = stm32serial_txint,
   .txready        = stm32serial_txready,
-  .txempty        = stm32serial_txready,
+  .txempty        = stm32serial_txempty,
 };
 
 /* I/O buffers */
@@ -213,6 +214,11 @@ static const struct uart_ops_s g_uart_ops =
 #ifdef CONFIG_STM32_USART1_SERIALDRIVER
 static char g_usart1rxbuffer[CONFIG_USART1_RXBUFSIZE];
 static char g_usart1txbuffer[CONFIG_USART1_TXBUFSIZE];
+#endif
+
+#ifdef CONFIG_STM32_USART3_SERIALDRIVER
+static char g_usart3rxbuffer[CONFIG_USART3_RXBUFSIZE];
+static char g_usart3txbuffer[CONFIG_USART3_TXBUFSIZE];
 #endif
 
 /* This describes the state of the STM32N6 USART1 port. */
@@ -271,6 +277,60 @@ static struct stm32_serial_s g_usart1priv =
 };
 #endif
 
+#ifdef CONFIG_STM32_USART3_SERIALDRIVER
+static struct stm32_serial_s g_usart3priv =
+{
+  .dev =
+    {
+#  if CONSOLE_UART == 3
+      .isconsole = true,
+#  endif
+      .recv      =
+      {
+        .size    = CONFIG_USART3_RXBUFSIZE,
+        .buffer  = g_usart3rxbuffer,
+      },
+      .xmit      =
+      {
+        .size    = CONFIG_USART3_TXBUFSIZE,
+        .buffer  = g_usart3txbuffer,
+      },
+      .ops       = &g_uart_ops,
+      .priv      = &g_usart3priv,
+    },
+
+  .irq           = STM32_IRQ_USART3,
+  .parity        = CONFIG_USART3_PARITY,
+  .bits          = CONFIG_USART3_BITS,
+  .stopbits2     = CONFIG_USART3_2STOP,
+  .baud          = CONFIG_USART3_BAUD,
+  .apbclock      = STM32_HSI_FREQUENCY,
+  .usartbase     = STM32_USART3_BASE,
+  .tx_gpio       = GPIO_USART3_TX,
+  .rx_gpio       = GPIO_USART3_RX,
+#  if defined(CONFIG_SERIAL_OFLOWCONTROL) && defined(CONFIG_USART3_OFLOWCONTROL)
+  .oflow         = true,
+  .cts_gpio      = GPIO_USART3_CTS,
+#  endif
+#  if defined(CONFIG_SERIAL_IFLOWCONTROL) && defined(CONFIG_USART3_IFLOWCONTROL)
+  .iflow         = true,
+  .rts_gpio      = GPIO_USART3_RTS,
+#  endif
+
+  .lock               = SP_UNLOCKED,
+  .unconfigure        = 0
+#if defined(CONFIG_USART3_UNCONFIG_RX_ON_CLOSE)
+                      |
+                      USART_UNCONFIGURE_RX
+#endif
+#if defined(CONFIG_USART3_UNCONFIG_TX_ON_CLOSE)
+                      |
+                      USART_UNCONFIGURE_TX
+#endif
+      ,
+};
+#endif
+
 /* This table lets us iterate over the configured USARTs */
 
 static struct stm32_serial_s * const
@@ -279,7 +339,11 @@ static struct stm32_serial_s * const
 #ifdef CONFIG_STM32_USART1_SERIALDRIVER
   [0] = &g_usart1priv,
 #endif
+#ifdef CONFIG_STM32_USART3_SERIALDRIVER
+  [2] = &g_usart3priv,
+#endif
 };
+
 
 #ifdef CONFIG_PM
 struct serialpm_s
@@ -686,6 +750,15 @@ static void stm32serial_setapbclock(struct uart_dev_s *dev, bool on)
       regaddr_clr = STM32_RCC_APB2ENCR;
       break;
 #endif
+
+#ifdef CONFIG_STM32_USART3_SERIALDRIVER
+    case STM32_USART3_BASE:
+      rcc_en = RCC_APB1LENR_USART3EN;
+      regaddr_set = STM32_RCC_APB1LENSR;
+      regaddr_clr = STM32_RCC_APB1LENCR;
+      break;
+#endif
+
     }
 
   /* Enable/disable APB 1/2 clock for USART.
@@ -1476,6 +1549,23 @@ static bool stm32serial_txready(struct uart_dev_s *dev)
 
   return ((stm32serial_getreg(priv, STM32_USART_ISR_OFFSET) &
            USART_ISR_TXE) != 0);
+}
+
+/****************************************************************************
+ * Name: stm32serial_txempty
+ *
+ * Description:
+ *   Return true if the transmit shift register and FIFO are empty (TC bit set)
+ *
+ ****************************************************************************/
+
+static bool stm32serial_txempty(struct uart_dev_s *dev)
+{
+  struct stm32_serial_s *priv =
+    (struct stm32_serial_s *)dev->priv;
+
+  return ((stm32serial_getreg(priv, STM32_USART_ISR_OFFSET) &
+           USART_ISR_TC) != 0);
 }
 
 /****************************************************************************

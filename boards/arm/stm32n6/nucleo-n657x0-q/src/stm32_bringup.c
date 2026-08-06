@@ -37,6 +37,15 @@
 
 #include <arch/board/board.h>
 
+#ifdef CONFIG_I2C
+#  include <nuttx/i2c/i2c_master.h>
+#  include "stm32_i2c.h"
+#endif
+
+#ifdef CONFIG_SENSORS_MPU60X0
+#  include <nuttx/sensors/mpu60x0.h>
+#endif
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -67,6 +76,55 @@ int stm32_bringup(void)
     {
       syslog(LOG_ERR, "ERROR: userled_lower_initialize() failed: %d\n", ret);
     }
+#endif
+
+#ifdef CONFIG_I2C
+  {
+    FAR struct i2c_master_s *i2c;
+    int ret;
+
+    /* Initialize I2C1 */
+    i2c = stm32_i2cbus_initialize(1);
+    if (!i2c)
+      {
+        syslog(LOG_ERR, "ERROR: Failed to initialize I2C1\n");
+      }
+    else
+      {
+        /* Register /dev/i2c1 */
+        ret = i2c_register(i2c, 1);
+        if (ret < 0)
+          {
+            syslog(LOG_ERR, "ERROR: i2c_register for I2C1 failed: %d\n", ret);
+          }
+      }
+  }
+#endif
+
+#ifdef CONFIG_SENSORS_MPU60X0
+  {
+    FAR struct i2c_master_s *i2c;
+    struct mpu_config_s config;
+    int ret;
+
+    i2c = stm32_i2cbus_initialize(1);
+    if (!i2c)
+      {
+        syslog(LOG_ERR, "ERROR: Failed to initialize I2C1 for MPU60X0\n");
+      }
+    else
+      {
+        memset(&config, 0, sizeof(config));
+        config.i2c = i2c;
+        config.addr = 0x68; /* Default MPU6050 address */
+
+        ret = mpu60x0_register("/dev/imu0", &config);
+        if (ret < 0)
+          {
+            syslog(LOG_ERR, "ERROR: mpu60x0_register failed: %d\n", ret);
+          }
+      }
+  }
 #endif
 
   return OK;
