@@ -35,6 +35,10 @@
 
 #include <arch/board/board.h>
 
+#ifdef CONFIG_STM32N6_GPDMA1
+#  include "stm32_dma.h"
+#endif
+
 /****************************************************************************
  * Name: stm32_board_initialize
  *
@@ -48,6 +52,11 @@
 
 void stm32_board_initialize(void)
 {
+#ifdef CONFIG_STM32N6_GPDMA1
+  /* Initialize the DMA subsystem */
+
+  stm32_dmainitialize();
+#endif
 
 #ifdef CONFIG_ARCH_LEDS
   /* Configure on-board LEDs if LED support has been selected. */

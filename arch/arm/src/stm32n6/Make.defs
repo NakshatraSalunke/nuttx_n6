@@ -44,6 +44,9 @@ endif
 ifeq ($(CONFIG_STM32N6_I2C),y)
 CHIP_CSRCS += stm32_i2c.c
 endif
+ifeq ($(CONFIG_STM32N6_GPDMA1),y)
+CHIP_CSRCS += stm32_dma.c
+endif
 
 # Chip-specific RCC
 

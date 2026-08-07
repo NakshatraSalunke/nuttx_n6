@@ -48,6 +48,10 @@ if(CONFIG_STM32N6_I2C)
   list(APPEND SRCS stm32_i2c.c)
 endif()
 
+if(CONFIG_STM32N6_GPDMA1)
+  list(APPEND SRCS stm32_dma.c)
+endif()
+
 
 # Chip-specific RCC
 
